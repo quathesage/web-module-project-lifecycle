@@ -5,7 +5,8 @@ class App extends React.Component {
   state = {
      userSearch: 'quathesage',
      userInfo: {},
-     followers: []
+     followers: [],
+     didMount: false,
   };
 
   componentDidMount() {
@@ -13,7 +14,8 @@ class App extends React.Component {
     .then(res => {
       this.setState({
         ...this.state,
-        userInfo: res.data
+        userInfo: res.data,
+        didMount: true
       })
     })
     .catch(error => {
@@ -22,12 +24,24 @@ class App extends React.Component {
   }
 
   componentDidUpdate() {
+    this.state.didMount ?
+      axios.get('https://api.github.com/users/quathesage/followers')
+      .then(res => {
+        console.log(res.data)
+        this.setState({
+          followers: res.data,
+          didMount: false
+        })
+      })
+      .catch(error => {
+        console.error(error)
+      }) : null
+    }
 
-  }
 
   render() {
-    console.log(this.state)
-    return(
+    // console.log(this.state)
+    return (
       <div>
         <h1>Github Card</h1>
         <form>
@@ -35,7 +49,7 @@ class App extends React.Component {
           <button>Search</button>
         </form>
         <div>
-          <img src='https://avatars.githubusercontent.com/u/90537370?v=4'/>
+          <img src={this.state.userInfo.avatar_url}/>
           <h2>DeQuavion Wilburn</h2>
           <h4>Full-Stack Developer</h4>
         </div>
@@ -57,7 +71,7 @@ class App extends React.Component {
           </div>
         </div>
       </div>
-    )}
+    )};
 }
 
 export default App;
