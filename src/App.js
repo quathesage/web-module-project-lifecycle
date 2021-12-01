@@ -1,7 +1,32 @@
 import React from 'react';
+import axios from 'axios';
 
 class App extends React.Component {
+  state = {
+     userSearch: 'quathesage',
+     userInfo: {},
+     followers: []
+  };
+
+  componentDidMount() {
+    axios.get('https://api.github.com/users/quathesage')
+    .then(res => {
+      this.setState({
+        ...this.state,
+        userInfo: res.data
+      })
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }
+
+  componentDidUpdate() {
+
+  }
+
   render() {
+    console.log(this.state)
     return(
       <div>
         <h1>Github Card</h1>
